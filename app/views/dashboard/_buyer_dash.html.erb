@@ -1,0 +1,34 @@
+<div id="buyer_dash" role="tabpanel" class="tab-pane fade show active">
+  <div class="container">
+    <h2>Stores streaming now</h2>
+    <div class="row">
+      <% if @streaming_stores.count > 0 %>
+          <% @streaming_stores.each do |store| %>
+              <%= render partial: 'stores/store_listing', locals: {store: store} %>
+          <% end %>
+      <% else %>
+          <p style="margin-left: 20px">You should be streaming ;)</p>
+      <% end %>
+    </div>
+    <h2>Subscription</h2>
+    <div class="row">
+      <% if @subscribed_stores.count > 0 %>
+          <% @subscribed_stores.each do |store| %>
+              <%= render partial: 'stores/store_listing', locals: {store: store} %>
+          <% end %>
+      <% else %>
+          <p style="margin-left: 20px">Check out the stores below!</p>
+      <% end %>
+    </div>
+    <h2>Other Popular Stores</h2>
+    <div class="row">
+      <% if @other_stores.count > 0 %>
+          <% @other_stores.each do |store| %>
+              <%= render partial: 'stores/store_listing', locals: {store: store} %>
+          <% end %>
+      <% else %>
+          <p>All stores have already been listed above!</p>
+      <% end %>
+    </div>
+  </div>
+</div>

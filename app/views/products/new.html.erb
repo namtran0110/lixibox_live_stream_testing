@@ -1,0 +1,39 @@
+<div class="container" style="padding-top: 50px">
+  <%= form_for([@product.store, @product]) do |f| %>
+      <% if @product.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
+
+            <ul>
+              <% @product.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+      <% end %>
+
+      <div class="field">
+        <%= f.label :name %>
+        <%= f.text_field :name, class:'form-control', :required => true %>
+      </div>
+      <div class="field">
+        <%= f.label :Description %>
+        <%= f.text_area :description, class:'form-control', :required => true %>
+      </div>
+      <div class="field">
+        <%= f.label :price %>
+        <%= f.number_field :price, class:'form-control', :required => true %>
+      </div>
+      <div class="field">
+        <%= f.label :Image %>
+        <%= f.file_field :image, class:'form-control', :required => true %>
+      </div>
+      <div class="field">
+        <%= f.label :Category %>
+        <%= select_tag(:category_id, options_for_select(@categories), :required => true, :prompt => "Select one!") %>
+      </div>
+      <div class="actions text-center">
+        <%= f.submit class:'btn btn-success' %>
+      </div>
+  <% end %>
+</div>

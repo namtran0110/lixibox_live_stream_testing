@@ -1,0 +1,74 @@
+//gradient
+#gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  //full version
+    top: 0;
+    bottom: 0;
+
+  //line version
+    // @include align(vertical);
+    // top: 35%;
+    // left: 0;
+    // right: 0;
+    // height: 15px;
+}
+
+//coverflow
+#coverflow {
+  margin-bottom: 75px;
+  h4 {
+    @include lato;
+    text-transform: uppercase;
+    display: inline-block;
+    position: absolute;
+    right: calc(50% + 200px);
+    top: 10px;
+    color: white;
+    text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
+    small {
+      font-size: 14px;
+    }
+    span { position: relative; }
+    svg {
+      @include align(vertical);
+      height: 10px;
+      width: 10px;
+      left: 100%;
+      margin-left: 4px;
+    }
+  }
+}
+#coverflow-panel {
+  @include align(horizontal);
+  transform: translate(-50%, 50%);
+  bottom: 0;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0px 0px 2px rgba(0,0,0,0.5);
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+//flipster overrides
+.flipster--coverflow .flipster__container {
+  padding-top: 5%;
+  padding-bottom: 7%;
+}
+.flipster__item {
+  vertical-align: middle;
+  max-width: 300px;
+}
+
+
+
+//login/out
+body.home-index .alert {
+  margin-bottom: 0;
+}
+

@@ -1,0 +1,234 @@
+//products
+section.products {
+  padding: 20px;
+  &:nth-of-type(odd) {
+    background: $light_gray;
+  }
+}
+
+//theater
+#store-headline {
+  padding: 43px 20px 20px;
+  margin-bottom: 0;
+}
+.theater {
+  padding: 0 0 0 0;
+  background: $dark_gray;
+  text-align: center;
+  #stream {
+    background-size: cover;
+    background-position: 50% 50%;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    min-height: 72px;
+    #stop-recording {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 2;
+    }
+    #viewers {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 2;
+      .svg-wrapper {
+        position: relative;
+        svg {
+          @include align(vertical);
+          height: 10px;
+          width: 10px;
+          left: 0;
+        }
+      }
+      #viewer-count {
+        margin-left: 15px;
+        color: white;
+        text-transform: uppercase;
+        font-weight: 500;
+        text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
+      }
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      .wrapper {
+        @include align(both);
+      }
+    }
+  }
+  video,
+  .fake-video {
+    max-height: 70vh;
+  }
+}
+
+//scroll function css
+#videos-container {
+  position: relative;
+}
+#main.scrolled #videos-container {
+  position: fixed;
+  top: 59px;
+  right: 0;
+  width: 340px;
+  border-left: 3px solid $brand;
+  border-bottom: 3px solid $brand;
+}
+
+
+//panel & main
+#main {
+  max-height: calc(100vh - #{$header_height});
+  overflow-y: scroll;
+}
+.panel {
+  position: absolute;
+  top: 26px;
+  bottom: 0;
+  width: 340px;
+  height: 100%;
+  border-left: 3px solid $brand;
+  background: $light_gray;
+  &.open {
+    right: 0;
+    & + #main {
+      margin-right: 340px;
+    }
+  }
+  &.closed {
+    right: -330px;
+    & + #main {
+      margin-right: 10px;
+    }
+  }
+  .tab-content {
+    height: 100%;
+    position: relative;
+    .nav-tabs {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      .panel-toggle {
+        float: left; padding: 5px;
+        button { cursor: pointer;}
+      }
+    }
+  }
+}
+#chat,
+#profile {
+  padding: 20px;
+  padding-top: 62px;
+}
+
+//panel toggle
+.panel-toggle {
+  button {
+    color: black;
+    background: none;
+    border: none;
+    font-size: 22px;
+    position: absolute;
+    right: 100%;
+    top: -2px;
+    z-index: 4;
+    outline: none;
+    padding: 10px 0;
+    transition: all 150ms ease;
+    &:hover {
+      color: darken($brand, 10%);
+    }
+  }
+  &:before {
+    @include align(horizontal);
+    left: auto;
+    content: '';
+    display: block;
+    box-sizing: content-box;
+    border-top: 25px solid $light_gray;
+    border-left: 0px solid transparent;
+    border-right: 25px solid transparent;
+    height: 65px;
+    width: 65px;
+    top: 0;
+    right: 100%;
+    z-index: 4;
+    transform: rotate(90deg);
+  }
+  &:after {
+    @include align(horizontal);
+    left: auto;
+    content: '';
+    display: block;
+    box-sizing: content-box;
+    border-top: 25px solid $brand;
+    border-left: 0px solid transparent;
+    border-right: 25px solid transparent;
+    right: 100%;
+    height: 63px;
+    width: 69px;
+    top: 0;
+    transform: rotate(90deg);
+    z-index: 3;
+  }
+}
+
+//chat
+#chat {
+  height: 100%;
+  padding-bottom: 120px;
+  .messages {
+    height: 100%;
+    overflow: scroll;
+    position: relative;
+    .user {
+      font-weight: bold;
+    }
+    .alert {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+  }
+  .chat-input {
+    @include clearfix;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    textarea {
+      width: 100%;
+      resize: none;
+      padding: 6px;
+      font-size: 14px;
+    }
+    button {
+      display: none;
+      float: right;
+    }
+  }
+  @include respond-to(480px) {
+    padding-bottom: 145px;
+    .chat-input button {
+      display: block;
+    }
+  }
+}
+
+//profile
+#profile {
+  height: 100%;
+  .wrapper {
+    height: 100%;
+    overflow: scroll;
+    padding-right: 8px;
+  }
+}

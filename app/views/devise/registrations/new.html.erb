@@ -1,0 +1,50 @@
+<div class="container" style="margin-top: 100px">
+  <h2>Sign up</h2>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
+
+      <div class="field">
+        <%= f.label :username %><br/>
+        <%= f.text_field :username, autofocus: true, class: 'form-control', :required => true %>
+      </div>
+
+      <div class="field">
+        <%= f.label :email %><br/>
+        <%= f.email_field :email, class: 'form-control', :required => true %>
+      </div>
+
+      <div class="field">
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+            <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %><br/>
+        <%= f.password_field :password, autocomplete: "off", class: 'form-control', :required => true %>
+      </div>
+
+      <div class="field">
+        <%= f.label :password_confirmation %><br/>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', :required => true %>
+      </div>
+
+      <div class="field">
+        <%= f.file_field :avatar, class: 'form-control', :required => true %>
+      </div>
+
+      <div class="field">
+        <%= f.submit "Sign up", :class => 'form-control access-btn' %>
+
+        <%- if controller_name != 'sessions' %>
+            <%= link_to "Log in", new_session_path(resource_name) %><br/>
+        <% end -%>
+
+        <%- if devise_mapping.omniauthable? %>
+            <%- resource_class.omniauth_providers.each do |provider| %>
+                <%= link_to "Sign in with #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider) %>
+                <br/>
+            <% end -%>
+        <% end -%>
+      </div>
+  <% end %>
+
+</div>

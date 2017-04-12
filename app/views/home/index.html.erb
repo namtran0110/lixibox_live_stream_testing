@@ -1,0 +1,55 @@
+<div class="wrapper">
+  <div id="coverflow">
+    <div id="gradient"></div>
+
+    <% if @streaming_stores.count > 0 %>
+
+        <h4 style="padding-top: 20px">
+          <small>Top stores:</small>
+          <br>
+          <span>Live<svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="5" fill="red"></circle></svg></span>
+        </h4>
+
+        <ul class="flip-items">
+          <% @streaming_stores.each do |store, i| %>
+              <li
+              data-store="<%= store.name %>"
+              data-stream="<%= store.stream_instance.title %>"
+              data-uri="<%= store_path(store) %>">
+                <%= image_tag store.user.avatar.url(:medium) %>
+              </li>
+          <% end %>
+          <% @streaming_stores.each do |store, i| %>
+              <li
+              data-store="<%= store.name %>"
+              data-stream="<%= store.stream_instance.title %>"
+              data-uri="<%= store_path(store) %>">
+                <%= image_tag store.user.avatar.url(:medium) %>
+              </li>
+          <% end %>
+        </ul>
+    <% end %>
+  </div>
+
+  <% if @streaming_stores.count > 0 %>
+      <div id="coverflow-panel">
+        <!-- dynamically populated -->
+      </div>
+  <% else %>
+      <div style="height: 200px; width: 100%;">
+        <h1 class="text-center" style="display: block; line-height: 10px; color: white; padding-top: 100px">GET CACHY - GET KACHING!</h1>
+      </div>
+  <% end %>
+</div>
+<div class="container">
+  <h2 style="padding-top: 20px; padding-left: 1px">Popular stores:</h2>
+  <div class="row">
+    <% if @other_stores.count > 0 %>
+        <% @other_stores.each do |store| %>
+            <%= render partial: 'stores/store_listing', locals: {store: store} %>
+        <% end %>
+    <% else %>
+        <p>All stores have already been listed above!</p>
+    <% end %>
+  </div>
+</div>

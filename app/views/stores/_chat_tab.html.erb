@@ -1,0 +1,10 @@
+<div id="chat" role="tabpanel" class="tab-pane fade <%= (@streamer_view == true || @store.streaming_now == true) ? 'show active' : '' %>">
+  <div class="messages js-setup-store-chat" data-store-id="<%= @store.id %>">
+    <p><strong>Welcome to Chat</strong></p>
+  </div>
+
+  <div class="chat-input<%= current_user ? '' : ' no-user' %>">
+    <textarea rows="3" name="message_input" id="message-input" value="" placeholder="Type to chat"></textarea>
+    <button id="message-send" >Send</button>
+  </div>
+</div>

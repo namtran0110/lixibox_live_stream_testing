@@ -1,0 +1,209 @@
+<script>
+    var videosContainer = document.getElementById('videos-container') || document.body;
+    var setupNewBroadcast = document.getElementById('setup-new-broadcast');
+    var roomsList = document.getElementById('rooms-list');
+    var broadcastingOption = document.getElementById('broadcasting-option');
+    var config = {
+        openSocket: function (config) {
+            // https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md
+            // This method "openSocket" can be defined in HTML page
+            // to use any signaling gateway either XHR-Long-Polling or SIP/XMPP or WebSockets/Socket.io
+            // or WebSync/SignalR or existing implementations like signalmaster/peerserver or sockjs etc.
+
+            var channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
+            var socket = new Firebase('https://webrtc.firebaseIO.com/' + channel);
+            socket.channel = channel;
+            socket.on("child_added", function (data) {
+                config.onmessage && config.onmessage(data.val());
+            });
+            socket.send = function (data) {
+                this.push(data);
+            };
+            config.onopen && setTimeout(config.onopen, 1);
+            socket.onDisconnect().remove();
+            return socket;
+        },
+        onRemoteStream: function (htmlElement) {
+            htmlElement.setAttribute('controls', true);
+            document.getElementById("fake-video-placeholder").classList.add("display-none");
+            videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
+            htmlElement.play();
+        },
+        onRoomFound: function (room) {
+            var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
+            if (alreadyExist) return;
+
+            if (typeof roomsList === 'undefined') roomsList = document.body;
+
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is live!</td>' +
+                '<td><button class="join">Join</button></td>';
+            roomsList.insertBefore(tr, roomsList.firstChild);
+
+            var joinRoomButton = tr.querySelector('.join');
+            joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
+            joinRoomButton.setAttribute('data-roomToken', room.broadcaster);
+            joinRoomButton.setAttribute('data-storeID', <%= store_id %>);
+            joinRoomButton.onclick = function () {
+                this.disabled = true;
+
+                var broadcaster = this.getAttribute('data-broadcaster');
+                var roomToken = this.getAttribute('data-roomToken');
+                broadcastUI.joinRoom({
+                    roomToken: roomToken,
+                    joinUser: broadcaster
+                });
+                hideUnnecessaryStuff();
+            };
+
+            //tlock addition --> immediately click 'join' button for current room only
+            <% if streaming_now %>
+                document.querySelector('[data-storeid="<%= store_id %>"]').click();
+                console.log('clicked store id: <%= store_id %> to join');
+            <% end %>
+        },
+        onNewParticipant: function (numberOfViewers) {
+            document.title = 'Viewers: ' + numberOfViewers;
+            var viewersDiv = document.getElementById('viewers');
+            var viewerCount = document.getElementById('viewer-count');
+            viewersDiv.className = "fade show";
+            viewerCount.textContent="Viewers: " + numberOfViewers;
+        }
+    };
+    var audioRecorder, videoRecorder;
+    if (setupNewBroadcast) setupNewBroadcast.onclick = setupNewBroadcastButtonClickHandler;
+
+    function setupNewBroadcastButtonClickHandler() {
+        document.getElementById('broadcast-name').disabled = true;
+        document.getElementById('setup-new-broadcast').disabled = true;
+
+        captureUserMedia(function () {
+            var shared = 'video';
+            broadcastUI.createRoom({
+                roomName: (document.getElementById('broadcast-name') || {}).value || 'Anonymous',
+                isAudio: shared === 'audio'
+            });
+        });
+        hideUnnecessaryStuff();
+    }
+
+
+    function initRecorders(stream) {
+        document.getElementById('stop-recording').disabled = false;
+        audioRecorder = RecordRTC(stream, {
+            recorderType: StereoAudioRecorder,
+            bufferSize: 16384,  // mandatory: if 720p output is forced. otherwise: optional
+            width: 1280, // optional---- to get 720p output
+            height: 720
+        });
+
+        videoRecorder = RecordRTC(stream, {
+            type: 'video', // Firefox doesn't accepts WhammyRecorder that's why we can't force it here
+            frameInterval: 90
+        });
+        var flagInitSuccess = 0;
+        videoRecorder.initRecorder(function () {
+            callBackInitSuccess();
+        });
+
+        audioRecorder.initRecorder(function () {
+            callBackInitSuccess();
+        });
+
+        function callBackInitSuccess(){
+            if (flagInitSuccess == 2) {
+                audioRecorder.startRecording();
+                videoRecorder.startRecording();
+            } else {
+                flagInitSuccess += 1;
+            }
+        }
+
+
+        document.getElementById('stop-recording').onclick = function () {
+
+            var flag = 0;
+            function saveVideo () {
+                console.log(flag);
+                flag+= 1;
+                if (flag === 2) {
+                    if (navigator.mozGetUserMedia === true) {
+                        // Firefox!
+                        var audioPlusVideoBlob = videoRecorder.blob;
+                        alert('Audio+Video: ' + bytesToSize(audioPlusVideoBlob.size));
+                        Upload_single_blob_to_server(audioPlusVideoBlob);
+                        videoRecorder.save();
+                        return;
+                    }
+
+                    var audioBlob = audioRecorder.blob;
+                    var videoBlob = videoRecorder.blob;
+
+                    videoRecorder.save();
+                }
+            }
+
+            videoRecorder.stopRecording(function () {
+                saveVideo();
+                console.log('stop Video')
+            });
+
+            audioRecorder.stopRecording(function () {
+                saveVideo();
+                console.log('stop Audio')
+
+                // UPLOAD_both_blobs_to_server( audioBlob, videoBlob );
+            });
+            console.log(videoRecorder);
+
+            this.disabled = true;
+            document.getElementById('setup-new-broadcast').disabled = false;
+            config.attachStream.getVideoTracks()[0].stop();
+            config.attachStream.getAudioTracks()[0].stop();
+        };
+
+    }
+    function captureUserMedia(callback) {
+        var constraints = null;
+        window.option = broadcastingOption ? broadcastingOption.value : '';
+
+        if (option != 'Only Audio' && option != 'Screen' && DetectRTC.hasWebcam !== true) {
+            console.log('DetectRTC library is unable to find webcam; maybe you denied webcam access once and it is still denied or maybe webcam device is not attached to your system or another app is using same webcam.');
+        }
+
+        var htmlElement = document.createElement(option === 'Only Audio' ? 'audio' : 'video');
+        htmlElement.setAttribute('autoplay', true);
+        htmlElement.setAttribute('controls', true);
+        videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
+
+        var mediaConfig = {
+            video: htmlElement,
+            onsuccess: function (stream) {
+                config.attachStream = stream;
+                callback && callback();
+
+                htmlElement.setAttribute('muted', true);
+                initRecorders(stream);
+            },
+            onerror: function () {
+                if (option === 'Only Audio') alert('unable to get access to your microphone');
+                else if (option === 'Screen') {
+                    if (location.protocol === 'http:') alert('Please test this WebRTC experiment on HTTPS.');
+                    else alert('Screen capturing is either denied or not supported. Are you enabled flag: "Enable screen capture support in getUserMedia"?');
+                } else alert('unable to get access to your webcam');
+            }
+        };
+        if (constraints) mediaConfig.constraints = constraints;
+        getUserMedia(mediaConfig);
+    }
+
+    var broadcastUI = broadcast(config);
+
+    function hideUnnecessaryStuff() {
+        var visibleElements = document.getElementsByClassName('visible'),
+            length = visibleElements.length;
+        for (var i = 0; i < length; i++) {
+            visibleElements[i].style.display = 'none';
+        }
+    }
+</script>

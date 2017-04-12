@@ -1,0 +1,26 @@
+<div class="panel open">
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+    <!-- tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+
+      <!-- toggle -->
+      <div class="panel-toggle">
+        <button><i class="icon-collapse"></i></button>
+      </div>
+
+      <li class="nav-item">
+        <a class="nav-link <%= (@streamer_view == true || @store.streaming_now == true) ? 'active' : '' %>" href="#chat" role="tab" data-toggle="tab">Chat</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link <%= (@streamer_view == true || @store.streaming_now == true) ? '' : 'active' %>" href="#profile" role="tab" data-toggle="tab">About Seller</a>
+      </li>
+    </ul>
+
+    <%= render 'chat_tab' %>
+    <%= render 'info_tab' %>
+
+  </div>
+</div>

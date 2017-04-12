@@ -1,0 +1,25 @@
+<div id="profile" role="tabpanel" class="tab-pane fade <%= (@streamer_view || @store.streaming_now == true) ? '' : 'show active' %>">
+
+  <div class="wrapper">
+    <!-- Store Image -->
+    <% if current_user %>
+        <%= rating_for @store, "quality", star_path: '/images', star: 10, disable_after_rate: false, cancel_place: 'right' %>
+    <% end %>
+    <div>
+      <%= image_tag @store.user.avatar.url(:medium) %>
+    </div>
+
+    <!-- Ratings -->
+    <% if @store.average("quality") != nil %>
+      <h5>Rating</h5> <%= @store.average("quality").avg%>/<%= @store.rates("quality").count %>
+    <%end%>
+    <hr>
+
+    <!-- Basic Info -->
+    <h4>About <%= @store.name %></h4>
+    <p><%= @store.user.description || @store.description%></p>
+
+
+    <!-- SUBSCRIBE / UNSUBSCRIBE LINKS -->
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<h1>Wellcome to here !!! </h1>
+
+<% if @user == current_user %>
+  <h3>This is meeeeeeeeeeeeee</h3>
+<% elsif current_user_is_following(current_user.id, @user.id)%>
+  <%= link_to "Unfollow", unfollow_user_path, class: 'btn btn-primary'%>
+<% else %>
+  <%= link_to "Follow", follow_user_path, class: 'btn btn-primary'%>
+<% end %>
+<br>
+<% if @user.avatar != nil %>
+  <%= image_tag @user.avatar.url(:medium) %>
+<% end %>

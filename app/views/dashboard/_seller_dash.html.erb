@@ -1,0 +1,46 @@
+<div id="seller_dash" role="tabpanel" class="tab-pane fade">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+
+        <h3>Start Streaming:</h3>
+        <hr>
+        <%= form_tag("/stores/#{current_user.store.slug}") do %>
+            <div class="form">
+              <%= hidden_field_tag :streaming_now, true %>
+              <div class="form-group">
+                <label><strong>Stream name:</strong></label>
+                <input name="stream_name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label><strong>Choose products:</strong></label>
+                <%= select_tag :product_ids, options_from_collection_for_select(@available_products, :id, :name), multiple: true, class: 'form-control', :required => true %>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <%= submit_tag "GO LIVE!", class: 'btn btn-danger' %>
+            </div>
+            </div>
+        <% end %>
+
+
+        <div class="col-md-6">
+          <h3>Seller Tasks</h3>
+          <hr>
+          <ul>
+            <li>
+              <%= link_to 'View my store', store_path(current_user.store) %>
+            </li>
+            <li>
+              <%= link_to 'Edit my information', edit_user_registration_path(current_user) %>
+            </li>
+            <li>
+              <%= link_to 'Add a new product', new_store_product_path(current_user.store) %>
+            </li>
+          </ul>
+        </div>
+        </div>
+  </div>
+</div>

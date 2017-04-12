@@ -1,0 +1,144 @@
+//global
+$header_height: 59px; /* potential changes and dynamic resizing */
+
+a {
+  color: $brand; text-decoration: none;
+  &:hover,
+  &:focus {
+    color: darken($brand, 10%);
+    //text-decoration: none;
+  }
+}
+
+.display-none {
+  display: none;
+}
+
+body {
+  background: #fff url('http://i.imgur.com/a1x9tVX.png') repeat center center;
+  background-size: 100px;
+  &.stores-show {
+    overflow: hidden;
+    .app-container {
+      height: calc(100vh - #{$header_height});
+    }
+  }
+}
+.app-container {
+  padding: 0;
+  margin-top: $header_height;
+  position: relative;
+  top: -50px;
+}
+.wrapper {
+  position: relative;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+button {
+  cursor: pointer;
+}
+
+//navbar
+.navbar {
+  background: $light_gray;
+  border-bottom: 3px solid $brand;
+}
+.navbar-brand {
+  @include align(horizontal);
+  img {
+    position: relative;
+    z-index: 3;
+  }
+}
+.navbar__search-form {
+  position: relative;
+}
+.navbar__search-button {
+  position: absolute;
+  top: 10px;
+  right: 13px;
+  border: 0;
+  background: none;
+  color: #464a4c;
+}
+.navbar-nav.ml-auto {
+  ul.dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+  .dropdown-arrow {
+    font-size: 7px;
+    display: inline-block;
+    padding-bottom: 1px;
+    vertical-align: middle;
+  }
+}
+
+//logo trapezoid
+.navbar-brand {
+  &:before {
+    @include align(horizontal);
+    content: '';
+    display: block;
+    box-sizing: content-box;
+    border-top: 20px solid $light_gray;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    height: 0;
+    width: 198px;
+    top: 47px;
+    z-index: 2;
+  }
+  &:after {
+    @include align(horizontal);
+    content: '';
+    display: block;
+    box-sizing: content-box;
+    border-top: 20px solid $brand;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    height: 0;
+    width: 200px;
+    top: 50px;
+  }
+}
+
+//spinner
+.spinner {
+  position: static;
+  width: 72px;
+  height: 72px;
+  background-color: $brand;
+  border-radius: 100%;
+  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+  animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+@-webkit-keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+
+//tab
+.tab-pane {
+  padding-top: 20px;
+}

@@ -1,0 +1,25 @@
+<div id="cat_dash" role="tabpanel" class="tab-pane fade">
+  <div class="container">
+    <h2>Categories</h2>
+
+    <div class="row">
+      <% @categories.each do |category| %>
+          <div class="col-md-4">
+            <div class="content">
+              <a href="<%= category_path(category) %>">
+                <div class="grid">
+                  <figure class="effect-apollo" style="max-height: 250px; height: 100vh;">
+                    <%= image_tag category.avatar.url %>
+                    <figcaption>
+                      <h3><%= category.name %></h3>
+                      <p>Go to category &rarr;</p>
+                    </figcaption>
+                  </figure>
+                </div>
+              </a>
+            </div>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>

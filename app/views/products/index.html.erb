@@ -1,0 +1,11 @@
+<div class=" text-center row">
+    <% @products.each do |p| %>
+      <div class="col-md-4">
+        <%= image_tag p.image.url(:medium) %>
+        <h4> <%= p.name %></h4>
+        <p><%= p.description %></p>
+        <p><%= p.price %></p>
+        <p><%= link_to Category.find(product.category_id).name, category_path(product.category_id) %></p>
+      </div>
+    <% end %>
+</div>

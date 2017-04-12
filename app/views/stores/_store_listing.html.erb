@@ -1,0 +1,15 @@
+<div class="col-md-4">
+  <div class="content">
+    <a href="<%= store_path(store) %>">
+      <div class="grid">
+        <figure class="effect-apollo" style="max-height: 250px; height: 100vh;">
+          <%= image_tag store.cover_photo(:large) %>
+          <figcaption>
+            <h3><%= store.name %></h3>
+            <p>Go to store &rarr;</p>
+          </figcaption>
+        </figure>
+      </div>
+    </a>
+  </div>
+</div>

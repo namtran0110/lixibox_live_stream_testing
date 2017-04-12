@@ -1,0 +1,56 @@
+<nav class="navbar fixed-top navbar-toggleable-sm navbar-light bg-faded">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <a class="navbar-brand mx-auto text-center" href="<%= root_path %>">
+      <%= image_tag 'logo-black@2x.png', style: 'width: 60%' %>
+      <div id="trapezoid"></div>
+    </a>
+
+
+    <ul class="navbar-nav ml-auto">
+      <% if current_user #logged in %>
+        <li class="nav-item">
+          <a class="nav-link" href="<%= dashboard_path %>">Dashboard</a>
+        </li>
+
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link" id="myStoreDropdown" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Store <span class="dropdown-arrow">&#9660;</span></a>
+          <ul class="dropdown-menu" aria-labelledby="myStoreDropdown">
+            <li><%= link_to 'View', store_path(current_user.store), class: "dropdown-item" %></li>
+            <li><%= link_to 'Edit', edit_user_registration_path(current_user), class: "dropdown-item" %></li>
+            <li><%= link_to 'Add Product', new_store_product_path(current_user.store), class: "dropdown-item" %></li>
+            <li><%= link_to 'Start Streaming', dashboard_path, class: "dropdown-item" %></li>
+          </ul>
+        </li> -->
+
+        <li class="nav-item">
+          <%= link_to "Cart",  carts_path, class: "nav-link" %>
+        </li>
+
+        <li class="nav-item">
+          <span class="nav-link"> | </span>
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "Log Out", destroy_user_session_path, method: 'delete', class: 'nav-link' %>
+        </li>
+        <% else #Logged out %>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<%= new_user_session_path %>">Login</a>
+          </li>
+          <li class="nav-item">
+            <span class="nav-link"> | </span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="<%= new_user_registration_path %>">Register</a>
+          </li>
+
+        <% end %>
+
+      </ul>
+    </div>
+  </nav>

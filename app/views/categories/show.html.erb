@@ -1,0 +1,50 @@
+<p id="notice"><%= notice %></p>
+<div class="container" style="padding-top: 50px">
+  <h2><%= @category.name %></h2>
+  <div class="row">
+    <% Product.where(category_id: @category.id).each do |product| %>
+        <div class="col-md-4">
+          <div data-target="#myModal-<%= product.id %>" data-toggle="modal">
+            <div class="content">
+              <div class="grid">
+                <figure class="effect-apollo" style="max-height: 250px; height: 100vh;">
+                  <%= image_tag product.image.url(:original), class: 'card-img-top' %>
+                  <figcaption>
+                    <h3><%= product.name %></h3>
+                    <p>See More &rarr;</p>
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+
+
+            <div id="myModal-<%= product.id %>" class="modal">
+
+              <!-- Modal content -->
+              <div class="modal-content">
+                <div class="row">
+                  <div class="col-md-6">
+                    <%= image_tag product.image.url(:original),  :style => "max-height: 476px" %>
+                  </div>
+                  <div class="col-md-6 text-left">
+                    <h3><%= product.name %></h3>
+                    <hr>
+                    <p><%= product.description %></p>
+                    <p><%= product.price %> VND</p>
+                    <%= form_for @order_item do |f| %>
+                        <%= f.hidden_field :quantity, value: 1, min: 1, class: 'form-control' %>
+                        <%= f.hidden_field :unit_price, value: product.price %>
+                        <%= f.hidden_field :product_id, value: product.id %>
+                        <%= f.submit "Buy now", class: "btn CL-button" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <% end %>
+    </div>
+  </div>
+</div>
+</div>

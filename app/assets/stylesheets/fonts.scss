@@ -1,0 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Fira+Sans:500|Lato:300,300italic,400,700);
+
+@mixin fira { font-family: "Fira Sans", sans-serif; font-weight: 500; }
+@mixin lato { font-family: "Lato", sans-serif; font-weight: 400; }
+
+h1,h2,h3,h4,h5,h6 {
+  @include fira;
+}
+p,a,li,blockquote {
+  @include lato;
+}

@@ -1,0 +1,104 @@
+<!-- PANEL -->
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script> <!-- audio/video recording -->
+<%= render 'side_panel' %>
+
+<!-- MAIN -->
+<div id="main">
+  <% if @store.streaming_now == true %>
+      <h3 id="store-headline"><% if current_user && current_user.id != @store.user.id %>
+            <% if current_user_is_following(current_user.id, @store.user.id)%>
+                <%= link_to "Unsubscribe", unfollow_user_path(@store.user.username)%>
+            <% else %>
+                <%= link_to "Subscribe", follow_user_path(@store.user.username)%>
+            <% end %>
+            <% end %> <%= @store.name %><span class="message"> is live: <%= @store.stream_instance.title %></span></h3>
+  <% else %>
+      <h3 id="store-headline"> <% if current_user && current_user.id != @store.user.id %>
+            <% if current_user_is_following(current_user.id, @store.user.id)%>
+                <%= link_to "Unsubscribe", unfollow_user_path(@store.user.username), class: 'btn btn-primary'%>
+            <% else %>
+                <%= link_to "Subscribe", follow_user_path(@store.user.username), class: 'btn btn-primary'%>
+            <% end %>
+            <% end %><%= @store.name %><span class="message">  is offline</span></h3>
+  <% end %>
+  <section class="theater">
+
+    <div id="stream" style="background-image: url(<%= @store.cover_photo.url(:original) %>)">
+
+      <!-- Overlay -->
+      <% if @store.streaming_now %>
+        <div class="overlay fade show">
+          <div class="wrapper">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Kill Button -->
+      <% if @streamer_view %>
+          <button id="stop-recording" class="btn btn-danger">End Stream</button>
+          <!-- Hidden Form -->
+          <%= form_tag("/stores/#{current_user.store.slug}/end", remote: true, style: "display: none") do %>
+            <%= hidden_field_tag :end_stream, true %>
+            <%= submit_tag "End Stream", id: "end-stream-submit" %>
+          <% end %>
+      <% end %>
+
+      <!-- Viewer Count -->
+      <div id="viewers" class="fade hide">
+        <span class="svg-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="5" fill="red"></circle></svg>
+          <span id="viewer-count">Viewers: -1</span>
+        </span>
+      </div>
+
+      <% if @streamer_view %>
+          <section style="display: none;">
+            <input type="text" id="broadcast-name" value="<%= @stream_name %>">
+            <button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
+          </section>
+      <% else %>
+          <!-- list of all available broadcasting rooms -->
+          <table style="display: none; width: 100%;" id="rooms-list"></table>
+      <% end %>
+
+      <!-- placeholder to make sizing work with many dynamic events on page -->
+      <%= image_tag "video_placeholder.png", id: 'fake-video-placeholder', class: @streamer_view ? "fake-video display-none" : "fake-video" %>
+
+      <!-- local/remote videos container -->
+      <div id="videos-container"></div>
+
+      <%= render partial: 'inline-script', locals: { store_id: @store.id, streamer_view: @streamer_view, streaming_now: @store.streaming_now } %>
+
+    </div>
+
+  </section>
+
+  <% if @store.streaming_now == true %>
+    <section id="streaming-products" class="products">
+      <h3>Products in this stream</h3>
+      <hr>
+      <div class="container row">
+      <% @streaming_products.each do |product| %>
+        <%= render partial: 'products/product', order_item: @order_item, locals: {product: product}, class: 'col-md-6' %>
+      <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <section id="main-products" class="products">
+
+    <% if @store.streaming_now == true %>
+        <h3 id="other-products-headline">Other popular products by seller</h3>
+    <% else %>
+        <h3>Products:</h3>
+    <% end %>
+
+    <hr>
+    <div class="container-fluid">
+      <div class="row">
+        <%= render @products %>
+      </div>
+    </div>
+  </section>
+</div>

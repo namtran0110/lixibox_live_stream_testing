@@ -1,0 +1,80 @@
+@import "bootstrap";
+@import "jquery.flipster";
+@import "mixins";
+@import "fonts";
+@import "palette";
+@import "global";
+@import "home";
+@import "sketches";
+@import "products";
+@import "font-awesome";
+
+audio, video {
+  vertical-align: top;
+  width: 100%;
+}
+input {
+  border: 1px solid #d9d9d9;
+  border-radius: 1px;
+  font-size: 2em;
+  margin: .2em;
+  width: 30%;
+}
+
+.setup {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  font-size: 102%;
+  height: 47px;
+  margin-left: -9px;
+  margin-top: 8px;
+  position: absolute;
+}
+
+.fb-access {
+  width: 200px;
+  background-color: #3b5998;
+  color: white
+}
+
+.fb-access:hover {
+  width: 200px;
+  background-color: #7F94C2;
+  color: white;
+}
+
+.access-btn {
+  width: 200px;
+  background-color: #0F9E50;
+  color: white
+}
+
+.access-btn:hover {
+  width: 200px;
+  background-color: #bada55;
+  color: white
+}
+
+.experiment {
+  padding: 0 0 0 0;
+}
+
+.CL-button {
+  text-transform: uppercase;
+  font-size: 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0F9E50;
+  color: white
+}
+
+.CL-button:hover {
+  border: none;
+  background-color: #bada55;
+  color: white
+}
+
+
+.alert {
+  padding-top: 30px;
+}
