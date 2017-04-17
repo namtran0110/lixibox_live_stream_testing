@@ -13,12 +13,6 @@ user01.save
 
 Store.update_all(description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde totam, tempora perferendis esse natus animi fuga sit voluptatibus inventore odit nihil cum quae ad provident debitis praesentium aspernatur laboriosam nulla eos assumenda iste, voluptatem obcaecati ipsa. Mollitia assumenda tempora earum deleniti quibusdam. Maxime tempora debitis est porro? Non, nobis, incidunt.")
 
-puts "linking subscriptions..."
-# This step is optional
-Follow.create following_id: user02.id, follower_id: user01.id
-Follow.create following_id: user03.id, follower_id: user02.id
-Follow.create following_id: user01.id, follower_id: user03.id
-
 puts "adding store cover photos..."
 Store.find(user01.store.id).update(cover_photo: File.new('seed_images/gatsby_background.jpg'))
 
