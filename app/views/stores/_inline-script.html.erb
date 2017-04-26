@@ -9,13 +9,16 @@
             // This method "openSocket" can be defined in HTML page
             // to use any signaling gateway either XHR-Long-Polling or SIP/XMPP or WebSockets/Socket.io
             // or WebSync/SignalR or existing implementations like signalmaster/peerserver or sockjs etc.
-
-            var channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
+            var channel = config.channel || 'ABC';
             var socket = new Firebase('https://webrtc.firebaseIO.com/' + channel);
             socket.channel = channel;
-            socket.on("child_added", function (data) {
+            socket.on("child_added", function (data, prevChildKey) {
+                var vid = data.val();
+                console.log(prevChildKey);
+                console.log(vid);
                 config.onmessage && config.onmessage(data.val());
             });
+            var onMessageCallbacks = {};
             socket.send = function (data) {
                 this.push(data);
             };
@@ -32,21 +35,17 @@
         onRoomFound: function (room) {
             var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
             if (alreadyExist) return;
-
             if (typeof roomsList === 'undefined') roomsList = document.body;
-
             var tr = document.createElement('tr');
             tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is live!</td>' +
                 '<td><button class="join">Join</button></td>';
             roomsList.insertBefore(tr, roomsList.firstChild);
-
             var joinRoomButton = tr.querySelector('.join');
             joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
             joinRoomButton.setAttribute('data-roomToken', room.broadcaster);
             joinRoomButton.setAttribute('data-storeID', <%= store_id %>);
             joinRoomButton.onclick = function () {
                 this.disabled = true;
-
                 var broadcaster = this.getAttribute('data-broadcaster');
                 var roomToken = this.getAttribute('data-roomToken');
                 broadcastUI.joinRoom({
@@ -55,11 +54,10 @@
                 });
                 hideUnnecessaryStuff();
             };
-
             //tlock addition --> immediately click 'join' button for current room only
             <% if streaming_now %>
-                document.querySelector('[data-storeid="<%= store_id %>"]').click();
-                console.log('clicked store id: <%= store_id %> to join');
+            document.querySelector('[data-storeid="<%= store_id %>"]').click();
+            console.log('clicked store id: <%= store_id %> to join');
             <% end %>
         },
         onNewParticipant: function (numberOfViewers) {
@@ -67,16 +65,14 @@
             var viewersDiv = document.getElementById('viewers');
             var viewerCount = document.getElementById('viewer-count');
             viewersDiv.className = "fade show";
-            viewerCount.textContent="Viewers: " + numberOfViewers;
+            viewerCount.textContent = "Viewers: " + numberOfViewers;
         }
     };
     var audioRecorder, videoRecorder;
     if (setupNewBroadcast) setupNewBroadcast.onclick = setupNewBroadcastButtonClickHandler;
-
     function setupNewBroadcastButtonClickHandler() {
         document.getElementById('broadcast-name').disabled = true;
         document.getElementById('setup-new-broadcast').disabled = true;
-
         captureUserMedia(function () {
             var shared = 'video';
             broadcastUI.createRoom({
@@ -86,8 +82,6 @@
         });
         hideUnnecessaryStuff();
     }
-
-
     function initRecorders(stream) {
         document.getElementById('stop-recording').disabled = false;
         audioRecorder = RecordRTC(stream, {
@@ -96,7 +90,6 @@
             width: 1280, // optional---- to get 720p output
             height: 720
         });
-
         videoRecorder = RecordRTC(stream, {
             type: 'video', // Firefox doesn't accepts WhammyRecorder that's why we can't force it here
             frameInterval: 90
@@ -105,12 +98,10 @@
         videoRecorder.initRecorder(function () {
             callBackInitSuccess();
         });
-
         audioRecorder.initRecorder(function () {
             callBackInitSuccess();
         });
-
-        function callBackInitSuccess(){
+        function callBackInitSuccess() {
             if (flagInitSuccess == 2) {
                 audioRecorder.startRecording();
                 videoRecorder.startRecording();
@@ -119,13 +110,12 @@
             }
         }
 
-
         document.getElementById('stop-recording').onclick = function () {
-
             var flag = 0;
-            function saveVideo () {
+
+            function saveVideo() {
                 console.log(flag);
-                flag+= 1;
+                flag += 1;
                 if (flag === 2) {
                     if (navigator.mozGetUserMedia === true) {
                         // Firefox!
@@ -135,10 +125,8 @@
                         videoRecorder.save();
                         return;
                     }
-
                     var audioBlob = audioRecorder.blob;
                     var videoBlob = videoRecorder.blob;
-
                     videoRecorder.save();
                 }
             }
@@ -147,41 +135,33 @@
                 saveVideo();
                 console.log('stop Video')
             });
-
             audioRecorder.stopRecording(function () {
                 saveVideo();
-                console.log('stop Audio')
-
+                console.log('stop Audio');
                 // UPLOAD_both_blobs_to_server( audioBlob, videoBlob );
             });
             console.log(videoRecorder);
-
             this.disabled = true;
             document.getElementById('setup-new-broadcast').disabled = false;
             config.attachStream.getVideoTracks()[0].stop();
             config.attachStream.getAudioTracks()[0].stop();
         };
-
     }
     function captureUserMedia(callback) {
         var constraints = null;
         window.option = broadcastingOption ? broadcastingOption.value : '';
-
         if (option != 'Only Audio' && option != 'Screen' && DetectRTC.hasWebcam !== true) {
             console.log('DetectRTC library is unable to find webcam; maybe you denied webcam access once and it is still denied or maybe webcam device is not attached to your system or another app is using same webcam.');
         }
-
         var htmlElement = document.createElement(option === 'Only Audio' ? 'audio' : 'video');
         htmlElement.setAttribute('autoplay', true);
         htmlElement.setAttribute('controls', true);
         videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
-
         var mediaConfig = {
             video: htmlElement,
             onsuccess: function (stream) {
                 config.attachStream = stream;
                 callback && callback();
-
                 htmlElement.setAttribute('muted', true);
                 initRecorders(stream);
             },
@@ -196,9 +176,7 @@
         if (constraints) mediaConfig.constraints = constraints;
         getUserMedia(mediaConfig);
     }
-
     var broadcastUI = broadcast(config);
-
     function hideUnnecessaryStuff() {
         var visibleElements = document.getElementsByClassName('visible'),
             length = visibleElements.length;
