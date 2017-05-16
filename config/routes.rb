@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'videos/upload'
+
   resources :categories
   resources :carts, only: [:index]
   post '/payment' => 'carts#payment'
@@ -9,6 +11,8 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
 
   root "home#index"
+
+  post 'videos/upload'
 
   get ':username/follow_user', to: 'relationships#follow_user', as: :follow_user
   get ':username/unfollow_user', to: 'relationships#unfollow_user', as: :unfollow_user
